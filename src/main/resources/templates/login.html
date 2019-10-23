@@ -46,7 +46,13 @@
                     formParams.append('password', this.form.password)
                 }
                 this.noAyncHttp('${base}/login/action.json', formParams).then((res) => {
-                    window.location.href = '${base}/index';
+                    if (res !== null && res.success) {
+                        window.location.href = '${base}/apply';
+                    } else if (res !== null) {
+                        alert(res.msg);
+                    } else {
+                        window.location.href = '${base}/index';
+                    }
                 }, (error) => {
                     console.error('出错了', error)
                 })

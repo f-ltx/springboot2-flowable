@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.zzy.entity.User;
 import com.zzy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,17 +44,20 @@ public class IndexController {
     @ResponseBody
     public Result<String> loginAction(ModelMap modelMap, HttpServletRequest request,
                                       HttpServletResponse response, HttpSession session, String username, String password) {
-        boolean loginFlag = userService.login(username, password);
-        if (loginFlag) {
+        User user = userService.login(username, password);
+        if (user != null) {
             session.setAttribute(SessionConst.SESSION_USERNAME_KEY, username);
+            session.setAttribute(SessionConst.SESSION_USER_KEY, user);
+            return Result.success("登陆成功");
         }
-        return Result.success("");
+        return Result.error("登陆失败");
     }
 
     @RequestMapping("/login/out")
     public String loginOut(ModelMap modelMap, HttpServletRequest request,
                            HttpServletResponse response, HttpSession session, String username, String password) {
         session.setAttribute(SessionConst.SESSION_USERNAME_KEY, null);
+        session.invalidate();
         return "login";
     }
 
