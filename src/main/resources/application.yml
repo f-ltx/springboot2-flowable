@@ -1,0 +1,41 @@
+###################  项目启动端口  ###################
+server:
+  port: 8888
+  tomcat:
+    uri-encoding: utf-8
+###################  spring配置  ###################
+flowable:
+  #关闭定时任务JOB
+  async-executor-activate: false
+  #  将databaseSchemaUpdate设置为true。当Flowable发现库与数据库表结构不一致时，会自动将数据库表结构升级至新版本。
+  database-schema-update: true
+spring:
+  http:
+    encoding:
+      force: true
+      charset: utf-8
+      enabled: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/flowable?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: mysqladmin
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+  freemarker:
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: true
+    expose-session-attributes: true
+    request-context-attribute: request
+    settings:
+      template_exception_handler: ignore
+    suffix: .html
+    template-loader-path: classpath:/templates
+logging:
+  path: logs/
+  file: flowable-test.log
