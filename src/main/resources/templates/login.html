@@ -47,7 +47,7 @@
                 }
                 this.noAyncHttp('${base}/login/action.json', formParams).then((res) => {
                     if (res !== null && res.success) {
-                        window.location.href = '${base}/apply';
+                        window.location.href = '${base}/applyUI';
                     } else if (res !== null) {
                         alert(res.msg);
                     } else {

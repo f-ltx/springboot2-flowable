@@ -2,6 +2,7 @@ package com.zzy.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author Administrator
@@ -14,6 +15,7 @@ public class Role implements Serializable {
     private String roleId;
     private String codeName;
     private String roleName;
+    private Set<User> users;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,5 +49,14 @@ public class Role implements Serializable {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

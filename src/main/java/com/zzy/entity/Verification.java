@@ -14,6 +14,15 @@ public class Verification implements Serializable {
     private String name;
     private String reason;
 
+    public Verification() {
+    }
+
+    public Verification(Long id, String name, String reason) {
+        this.id = id;
+        this.name = name;
+        this.reason = reason;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
