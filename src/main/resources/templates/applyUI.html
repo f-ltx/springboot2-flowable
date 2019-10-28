@@ -14,13 +14,14 @@
     <el-container>
         <el-header style="text-align: left; font-size: 12px; margin-top: 10px;">
             <el-link type="success">你好: ${user.displayName}</el-link>
+            <el-button type="primary" size="mini" @click="deploy" icon="el-icon-add">部署</el-button>
             <el-button type="primary" size="mini" @click="applyList" icon="el-icon-add">我的申请列表</el-button>
             <el-button type="primary" size="mini" @click="approveList" icon="el-icon-add">我的审批列表</el-button>
             <el-button type="primary" size="mini" @click="loginOut" icon="el-icon-add">退出登录</el-button>
         </el-header>
         <template>
             <el-table
-                    :data="verificationData"
+                    :data="vfas"
                     ref="multipleTable"
                     tooltip-effect="dark"
                     style="width: 100%"
@@ -30,19 +31,24 @@
                         width="auto">
                 </el-table-column>
                 <el-table-column
-                        prop="id"
+                        prop="verification.id"
                         label="编号"
                         width="auto">
                 </el-table-column>
                 <el-table-column
-                        prop="name"
+                        prop="verification.name"
                         label="名称"
                         width="auto">
                 </el-table-column>
                 <el-table-column
-                        prop="reason"
+                        prop="verification.reason"
                         label="原因"
                         width="auto">
+                </el-table-column>
+                <el-table-column
+                        prop="apply.id"
+                        label="applyId"
+                        v-if="false">
                 </el-table-column>
                 <el-table-column
                         label="操作"
@@ -50,7 +56,12 @@
                     <template slot-scope="scope">
                         <el-button
                                 size="mini"
-                                @click="apply(scope.$index, scope.row)">申请
+                                @click="apply(scope.$index, scope.row)"
+                                v-if="!scope.row.hasApply">申请
+                        </el-button>
+                        <el-button
+                                size="mini"
+                                v-if="scope.row.hasApply">查看
                         </el-button>
                     </template>
                 </el-table-column>
@@ -64,7 +75,7 @@
     var app = new Vue({
         el: '#info',
         data: {
-            verificationData: [],
+            vfas: [{}],
         },
         methods: {
             noAyncHttp(url, params) {
@@ -83,6 +94,13 @@
             loginOut() {
                 window.location.href = '${base}/login/out';
             },
+            deploy() {
+                this.noAyncHttp('${base}/deploy').then((res) => {
+                    alert(res.data);
+                }, (error) => {
+                    console.error('出错了', error);
+                })
+            },
             applyList() {
                 window.location.href = '${base}/applyList';
             },
@@ -94,8 +112,8 @@
             },
             loadVerificationData: function () {
                 this.noAyncHttp('${base}/loadVerificationData').then((res) => {
-                    if (res !== null) {
-                        this.verificationData = res;
+                    if (res && res.success) {
+                        this.vfas = JSON.parse(res.data);
                     }
                 }, (error) => {
                     console.error('出错了', error);
@@ -103,18 +121,19 @@
             },
             apply: function (index, row) {
                 const formParams = new FormData()
-                if (row.id) {
-                    formParams.append('id', row.id)
+                if (row && row.verification.id) {
+                    formParams.append('id', row.verification.id)
                 }
-                if (row.name) {
-                    formParams.append('name', row.name)
+                if (row && row.verification.name) {
+                    formParams.append('name', row.verification.name)
                 }
-                if (row.reason) {
-                    formParams.append('reason', row.reason)
+                if (row && row.verification.reason) {
+                    formParams.append('reason', row.verification.reason)
                 }
                 this.noAyncHttp('${base}/apply', formParams).then((res) => {
                     if (res !== null && res.success) {
                         alert(res.data);
+                        this.vfas[index].hasApply = true;
                     } else {
                         window.location.href = '${base}/index';
                     }
@@ -122,7 +141,8 @@
                     console.error('出错了', error);
                 })
             },
-        }
+        },
+        computed: {}
     });
     app.loadVerificationData();
 </script>

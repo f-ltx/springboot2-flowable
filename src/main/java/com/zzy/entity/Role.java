@@ -51,7 +51,7 @@ public class Role implements Serializable {
         this.roleName = roleName;
     }
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @Transient
     public Set<User> getUsers() {
         return users;
     }

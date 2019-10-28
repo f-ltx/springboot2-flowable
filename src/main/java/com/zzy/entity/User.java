@@ -53,10 +53,7 @@ public class User implements Serializable {
         this.displayName = displayName;
     }
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinTable(name = "T_USER_ROLE",
-            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "id")})
+    @Transient
     public Set<Role> getRoles() {
         return roles;
     }
